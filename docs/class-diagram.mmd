@@ -1,0 +1,98 @@
+classDiagram
+    direction TB
+
+    class DapatDirawat {
+        <<interface>>
+        +siram(literAir: int) void
+        +beriPupuk(jenisPupuk: String) void
+        +getNamaObjek() String
+    }
+
+    class DapatDipanen {
+        <<interface>>
+        +isSiapPanen() boolean
+        +hitungHasilPanenKg() double
+        +panen(hargaPerKg: int) int
+    }
+
+    class TanamanSawit {
+        <<abstract>>
+        -idBlok: String
+        -namaVarietas: String
+        #umurBulan: int
+        #kesehatan: int
+        #kadarAir: int
+        #siapPanen: boolean
+        +siram(literAir: int) void
+        +beriPupuk(jenisPupuk: String) void
+        +beriPupuk(jenisPupuk: String, dosisKg: int) void
+        +panen(hargaPerKg: int) int
+        +tumbuh(jumlahBulan: int)* void
+        +hitungHasilPanenKg()* double
+        +getKebutuhanLahan()* String
+        +getStatusRingkas() String
+    }
+
+    class SawitTenera {
+        -UMUR_MATANG_BULAN: int
+        -rendemenMinyak: double
+        -levelNutrisi: int
+        +beriPupuk(jenisPupuk: String, dosisKg: int) void
+        +tumbuh(jumlahBulan: int) void
+        +hitungHasilPanenKg() double
+        +getKebutuhanLahan() String
+    }
+
+    class SawitDura {
+        -UMUR_MATANG_BULAN: int
+        -ketahananKering: double
+        +tumbuh(jumlahBulan: int) void
+        +hitungHasilPanenKg() double
+        +getKebutuhanLahan() String
+    }
+
+    class SawitTopaz {
+        -UMUR_MATANG_BULAN: int
+        -faktorProduktivitas: double
+        +siram(literAir: int) void
+        +tumbuh(jumlahBulan: int) void
+        +hitungHasilPanenKg() double
+        +getKebutuhanLahan() String
+    }
+
+    class BibitPolybag {
+        -kodeBatch: String
+        -jumlahBibit: int
+        -kelembabanMedia: int
+        -tingkatVigor: int
+        +siram(literAir: int) void
+        +beriPupuk(jenisPupuk: String) void
+        +getNamaObjek() String
+        +isSiapPindahTanam() boolean
+    }
+
+    class KebunSawit {
+        -namaKebun: String
+        -daftarTanaman: List~TanamanSawit~
+        -daftarObjekDirawat: List~DapatDirawat~
+        -saldoRupiah: int
+        -bulanBerjalan: int
+        +tanamSawit(tanaman: TanamanSawit) void
+        +tambahObjekPerawatan(objek: DapatDirawat) void
+        +rawatSemua(literAir: int, jenisPupuk: String) void
+        +lewatiWaktu(jumlahBulan: int) void
+        +panenSemua(hargaTbsPerKg: int) int
+        +tampilkanRingkasan() void
+    }
+
+    DapatDirawat <|.. TanamanSawit : implements
+    DapatDipanen <|.. TanamanSawit : implements
+    DapatDirawat <|.. BibitPolybag : implements
+
+    TanamanSawit <|-- SawitTenera : extends
+    TanamanSawit <|-- SawitDura : extends
+    TanamanSawit <|-- SawitTopaz : extends
+
+    KebunSawit o-- "0..*" TanamanSawit : mengelola
+    KebunSawit o-- "0..*" DapatDirawat : merawat
+    KebunSawit ..> DapatDipanen : uses
