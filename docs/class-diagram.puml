@@ -1,116 +1,83 @@
-@startuml SawitManagementSystemClassDiagram
+@startuml SawitFarmClassDiagram
 skinparam classAttributeIconSize 0
 skinparam shadowing false
 skinparam linetype ortho
 
-title UML Class Diagram - Sistem Manajemen Perkebunan Kelapa Sawit
+title Class Diagram - Sawit Farm (Mini Farming Game OOP)
 
-interface Perawatan {
-  + jadwalkanPemupukan(): String
-  + jadwalkanPenyiraman(): String
+interface BisaDirawat {
+  + siram(): void
+  + beriPupuk(): void
 }
 
 abstract class TanamanSawit {
-  - idTanaman: String
-  - tanggalTanam: LocalDate
-  - luasLahan: double
-  - lokasiLahan: String
-  + getUmurBulan(): long
-  + getIdTanaman(): String
-  + setIdTanaman(idTanaman: String): void
-  + getTanggalTanam(): LocalDate
-  + setTanggalTanam(tanggalTanam: LocalDate): void
-  + getLuasLahan(): double
-  + setLuasLahan(luasLahan: double): void
-  + getLokasiLahan(): String
-  + setLokasiLahan(lokasiLahan: String): void
-  + {abstract} hitungEstimasiPanen(): double
-  + {abstract} getStatusPertumbuhan(): String
-  + {abstract} hitungKebutuhanPupuk(): double
-  + {abstract} getJenisFase(): String
-  + {abstract} getParameterKhusus(): double
-  + {abstract} getKeteranganEstimasi(): String
+  - umur: int
+  - air: int
+  - pupuk: int
+  + siram(): void
+  + beriPupuk(): void
+  + {abstract} tumbuh(): void
+  + {abstract} getStatus(): String
+  + {abstract} getSimbol(): String
+  + cekEvolusi(): TanamanSawit
+  + isSiapPanen(): boolean
+  + panen(): int
+  + getUmur(): int
+  + getAir(): int
+  + getPupuk(): int
+}
+
+class BibitSawit {
+  + tumbuh(): void
+  + cekEvolusi(): TanamanSawit
+  + getStatus(): String
+  + getSimbol(): String
 }
 
 class SawitMuda {
-  - DOSIS_PUPUK_KG_PER_HA: double = 350.0
-  - tinggiRataRataCm: double
-  + getTinggiRataRataCm(): double
-  + setTinggiRataRataCm(tinggiRataRataCm: double): void
-  + hitungEstimasiPanen(): double
-  + getStatusPertumbuhan(): String
-  + hitungKebutuhanPupuk(): double
-  + jadwalkanPemupukan(): String
-  + jadwalkanPenyiraman(): String
+  + tumbuh(): void
+  + cekEvolusi(): TanamanSawit
+  + getStatus(): String
+  + getSimbol(): String
 }
 
-class SawitProduktif {
-  - DOSIS_PUPUK_KG_PER_HA: double = 650.0
-  - targetTonPerHa: double
-  + getTargetTonPerHa(): double
-  + setTargetTonPerHa(targetTonPerHa: double): void
-  - getFaktorUmur(): double
-  + hitungEstimasiPanen(): double
-  + getStatusPertumbuhan(): String
-  + hitungKebutuhanPupuk(): double
-  + jadwalkanPemupukan(): String
-  + jadwalkanPenyiraman(): String
+class SawitDewasa {
+  - progresBuah: int
+  - siapPanen: boolean
+  + tumbuh(): void
+  + isSiapPanen(): boolean
+  + panen(): int
+  + getStatus(): String
+  + getSimbol(): String
 }
 
-class RiwayatPerawatan {
-  - idRiwayat: String
-  - idTanaman: String
-  - tanggal: LocalDate
-  - jenisKegiatan: String
-  - keterangan: String
-  + getIdRiwayat(): String
-  + getIdTanaman(): String
-  + getTanggal(): LocalDate
-  + getJenisKegiatan(): String
-  + getKeterangan(): String
+class GameSawit {
+  - lahan: TanamanSawit[][]
+  - koin: int
+  - hari: int
+  - totalPanen: int
+  + tanam(baris: int, kolom: int): String
+  + siram(baris: int, kolom: int): String
+  + beriPupuk(baris: int, kolom: int): String
+  + hariBerikutnya(): String
+  + panen(baris: int, kolom: int): String
+  + getBibitTersedia(): int
 }
 
-class ManajemenSawit {
-  - daftarTanaman: List<TanamanSawit>
-  - daftarRiwayat: List<RiwayatPerawatan>
-  - penyimpanan: PenyimpananData
-  + muatData(buatDataAwalJikaKosong: boolean): void
-  + simpanData(): void
-  + tambahTanaman(tanaman: TanamanSawit): void
-  + updateTanaman(idLama: String, tanamanBaru: TanamanSawit): void
-  + hapusTanaman(idTanaman: String): boolean
-  + cariTanaman(keyword: String): List<TanamanSawit>
-  + catatPerawatan(idTanaman: String, tanggal: LocalDate, jenis: String, ket: String): RiwayatPerawatan
-  + getTotalEstimasiPanen(): double
-  + getTotalKebutuhanPupuk(): double
+class GameGUI {
+  - game: GameSawit
+  - petakGrid: PetakPanel[][]
+  - barisTerpilih: int
+  - kolomTerpilih: int
+  + pilihPetak(baris: int, kolom: int): void
+  + perbaruiTampilan(): void
 }
 
-class PenyimpananData {
-  - fileTanaman: Path
-  - fileRiwayat: Path
-  + simpanTanaman(daftarTanaman: List<TanamanSawit>): void
-  + muatTanaman(): HasilMuat<TanamanSawit>
-  + simpanRiwayat(daftarRiwayat: List<RiwayatPerawatan>): void
-  + muatRiwayat(): HasilMuat<RiwayatPerawatan>
-}
-
-class MainFrame {
-  - manajemen: ManajemenSawit
-  - dashboardPanel: DashboardPanel
-  - tanamanPanel: TanamanPanel
-  - perawatanPanel: PerawatanPanel
-  - panenPanel: PanenPanel
-  + tampilkanHalaman(namaHalaman: String): void
-  + refreshSemuaPanel(): void
-}
-
-Perawatan <|.. TanamanSawit
+BisaDirawat <|.. TanamanSawit
+TanamanSawit <|-- BibitSawit
 TanamanSawit <|-- SawitMuda
-TanamanSawit <|-- SawitProduktif
-
-ManajemenSawit o--> "0..*" TanamanSawit : mengelola
-ManajemenSawit o--> "0..*" RiwayatPerawatan : mencatat
-ManajemenSawit --> "1" PenyimpananData : menyimpan
-MainFrame --> "1" ManajemenSawit : menggunakan
+TanamanSawit <|-- SawitDewasa
+GameSawit o--> "0..16" TanamanSawit : mengelola
+GameGUI --> "1" GameSawit : memainkan
 
 @enduml
