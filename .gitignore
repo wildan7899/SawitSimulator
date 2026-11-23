@@ -1,10 +1,21 @@
-# Compiled Java classes
+# Hasil kompilasi Java
 out/
+bin/
+build/
 *.class
+*.jar
 
-# IDE & Editor files
+# File sementara pengujian
+test-data/
+*.tmp
+*.log
+
+# Konfigurasi IDE & OS
 .idea/
 *.iml
 .vscode/
+.classpath
+.project
+.settings/
 .DS_Store
 Thumbs.db
