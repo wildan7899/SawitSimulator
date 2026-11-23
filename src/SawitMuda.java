@@ -1,10 +1,4 @@
-/**
- * Subclass SawitMuda mewakili tahap pertumbuhan menengah (Hari 2 - 3).
- *
- * Konsep OOP:
- * - INHERITANCE: mewarisi TanamanSawit
- * - POLYMORPHISM (Method Overriding): tumbuh(), getStatus(), getSimbol()
- */
+// Subclass tahap menengah (Hari 2-3), mewarisi TanamanSawit
 public class SawitMuda extends TanamanSawit {
 
     public SawitMuda(int umur, int air, int pupuk) {
@@ -13,7 +7,7 @@ public class SawitMuda extends TanamanSawit {
 
     @Override
     public void tumbuh() {
-        // Sawit muda tumbuh jika cukup air; pupuk mempercepat menuju sawit dewasa.
+        // Sama seperti bibit: butuh air untuk tumbuh, pupuk mempercepat (+2 umur)
         if (getAir() >= 1) {
             setAir(getAir() - 1);
             if (getPupuk() >= 1) {
@@ -27,7 +21,7 @@ public class SawitMuda extends TanamanSawit {
 
     @Override
     public TanamanSawit cekEvolusi() {
-        // Hari ke-4 ke atas, sawit muda berkembang menjadi SawitDewasa
+        // Umur >= 4 naik jadi SawitDewasa
         if (getUmur() >= 4) {
             return new SawitDewasa(getUmur(), getAir(), getPupuk());
         }

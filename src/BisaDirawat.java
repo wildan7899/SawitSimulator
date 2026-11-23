@@ -1,10 +1,5 @@
-/**
- * Interface BisaDirawat mendefinisikan kontrak perawatan dasar
- * yang harus dimiliki oleh tanaman kelapa sawit di dalam game.
- *
- * Konsep OOP: INTERFACE
- */
+// Interface: kontrak method perawatan yang wajib dimiliki setiap tanaman sawit
 public interface BisaDirawat {
-    void siram();
-    void beriPupuk();
+    void siram();      // Menambah air tanaman
+    void beriPupuk();  // Menambah pupuk tanaman
 }

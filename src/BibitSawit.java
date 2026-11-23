@@ -1,12 +1,7 @@
-/**
- * Subclass BibitSawit mewakili tahap awal tanaman (Hari 0 - 1).
- *
- * Konsep OOP:
- * - INHERITANCE: mewarisi TanamanSawit
- * - POLYMORPHISM (Method Overriding): tumbuh(), getStatus(), getSimbol()
- */
+// Subclass tahap awal (Hari 0-1), mewarisi TanamanSawit
 public class BibitSawit extends TanamanSawit {
 
+    // Bibit baru mulai dari umur 0 dengan air awal 1
     public BibitSawit() {
         super(0, 1, 0);
     }
@@ -17,8 +12,7 @@ public class BibitSawit extends TanamanSawit {
 
     @Override
     public void tumbuh() {
-        // Bibit hanya tumbuh jika disiram (air >= 1).
-        // Jika juga diberi pupuk, pertumbuhan menjadi 2x lebih cepat.
+        // Hanya tumbuh kalau punya air; pupuk bikin pertumbuhan 2x lebih cepat
         if (getAir() >= 1) {
             setAir(getAir() - 1);
             if (getPupuk() >= 1) {
@@ -32,7 +26,7 @@ public class BibitSawit extends TanamanSawit {
 
     @Override
     public TanamanSawit cekEvolusi() {
-        // Hari ke-2 ke atas, bibit berkembang menjadi SawitMuda
+        // Umur >= 2 naik jadi SawitMuda sambil bawa sisa air & pupuk
         if (getUmur() >= 2) {
             return new SawitMuda(getUmur(), getAir(), getPupuk());
         }

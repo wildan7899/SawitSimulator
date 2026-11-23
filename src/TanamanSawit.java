@@ -1,21 +1,18 @@
 /**
- * Abstract Class TanamanSawit menjadi kerangka dasar untuk seluruh tahap
- * pertumbuhan tanaman kelapa sawit (Bibit, Sawit Muda, dan Sawit Dewasa).
- *
- * Konsep OOP:
- * - ABSTRACT CLASS & ABSTRACT METHOD: tumbuh(), getStatus(), getSimbol()
- * - ENCAPSULATION: atribut umur, air, dan pupuk bersifat private
- * - INTERFACE: mengimplementasikan BisaDirawat
+ * Abstract Class induk untuk semua tahap tanaman sawit (Bibit, Muda, Dewasa).
+ * Mengimplementasikan BisaDirawat dan menerapkan encapsulation pada atributnya.
  */
 public abstract class TanamanSawit implements BisaDirawat {
 
     public static final int MAKS_AIR = 3;
     public static final int MAKS_PUPUK = 3;
 
+    // Atribut private (encapsulation) agar nilainya aman dan terkontrol lewat setter
     private int umur;
     private int air;
     private int pupuk;
 
+    // Constructor default untuk tanaman baru (umur 0, air awal 1, pupuk 0)
     public TanamanSawit() {
         this(0, 1, 0);
     }
@@ -26,29 +23,12 @@ public abstract class TanamanSawit implements BisaDirawat {
         setPupuk(pupuk);
     }
 
-    // =========================================================================
-    // Abstract Methods (wajib di-override oleh setiap subclass)
-    // =========================================================================
-
-    /**
-     * Mensimulasikan pertumbuhan tanaman saat hari berganti.
-     */
+    // Method abstract: wajib diisi (override) oleh setiap subclass sesuai tahapnya
     public abstract void tumbuh();
-
-    /**
-     * Mengembalikan teks status kondisi tanaman saat ini.
-     */
     public abstract String getStatus();
-
-    /**
-     * Mengembalikan simbol singkat representasi tahap tanaman.
-     */
     public abstract String getSimbol();
 
-    // =========================================================================
-    // Implementasi Interface BisaDirawat
-    // =========================================================================
-
+    // Implementasi interface BisaDirawat
     @Override
     public void siram() {
         setAir(air + 1);
@@ -59,18 +39,12 @@ public abstract class TanamanSawit implements BisaDirawat {
         setPupuk(pupuk + 1);
     }
 
-    // =========================================================================
-    // Evolusi Fase & Panen (dapat di-override oleh subclass terkait)
-    // =========================================================================
-
-    /**
-     * Mengecek apakah tanaman sudah siap naik ke fase (subclass) berikutnya
-     * sambil mempertahankan data umur, air, dan pupuk.
-     */
+    // Cek naik ke tahap berikutnya; default tetap di tahap sekarang
     public TanamanSawit cekEvolusi() {
         return this;
     }
 
+    // Default belum bisa dipanen (hanya di-override oleh SawitDewasa)
     public boolean isSiapPanen() {
         return false;
     }
@@ -79,16 +53,13 @@ public abstract class TanamanSawit implements BisaDirawat {
         return 0;
     }
 
-    // =========================================================================
-    // Getter & Setter (Encapsulation)
-    // =========================================================================
-
+    // Getter & Setter untuk menjaga nilai tetap di batas yang valid
     public int getUmur() {
         return umur;
     }
 
     protected void setUmur(int umur) {
-        this.umur = Math.max(0, umur);
+        this.umur = Math.max(0, umur); // Cegah umur bernilai negatif
     }
 
     protected void tambahUmur(int jumlah) {
@@ -100,6 +71,7 @@ public abstract class TanamanSawit implements BisaDirawat {
     }
 
     protected void setAir(int air) {
+        // Batasi kadar air antara 0 sampai MAKS_AIR
         this.air = Math.max(0, Math.min(MAKS_AIR, air));
     }
 
@@ -108,6 +80,7 @@ public abstract class TanamanSawit implements BisaDirawat {
     }
 
     protected void setPupuk(int pupuk) {
+        // Batasi kadar pupuk antara 0 sampai MAKS_PUPUK
         this.pupuk = Math.max(0, Math.min(MAKS_PUPUK, pupuk));
     }
 }

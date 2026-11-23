@@ -1,41 +1,35 @@
-/**
- * Subclass SawitDewasa mewakili tahap matang (Hari 4+) yang dapat menghasilkan
- * tandan buah sawit dan dipanen berulang kali setelah dirawat.
- *
- * Konsep OOP:
- * - INHERITANCE: mewarisi TanamanSawit
- * - POLYMORPHISM (Method Overriding): tumbuh(), getStatus(), getSimbol(), panen()
- */
+// Subclass tahap dewasa (Hari 4+), bisa berbuah dan dipanen berulang kali
 public class SawitDewasa extends TanamanSawit {
 
     public static final int HASIL_PANEN_KOIN = 50;
-    private static final int TARGET_PROGRES_BUAH = 2;
+    private static final int TARGET_PROGRES_BUAH = 2; // Batas progres agar buah siap panen
 
     private int progresBuah;
     private boolean siapPanen;
 
     public SawitDewasa(int umur, int air, int pupuk) {
         super(umur, air, pupuk);
-        this.progresBuah = 1; // Mulai berbuah saat memasuki fase dewasa
+        this.progresBuah = 1; // Saat baru dewasa, buah langsung mulai terbentuk
         this.siapPanen = false;
     }
 
     @Override
     public void tumbuh() {
-        // Umur tetap bertambah jika terawat; buah matang lebih cepat dengan air + pupuk.
+        // Kalau sudah siap panen, cukup tambah umur dan tunggu dipanen
         if (siapPanen) {
             tambahUmur(1);
             return;
         }
 
+        // Butuh air untuk mematangkan buah; pupuk mempercepat (+2 progres)
         if (getAir() >= 1) {
             setAir(getAir() - 1);
             tambahUmur(1);
             if (getPupuk() >= 1) {
                 setPupuk(getPupuk() - 1);
-                progresBuah += 2; // Air + pupuk membuat buah langsung matang
+                progresBuah += 2;
             } else {
-                progresBuah += 1; // Tanpa pupuk butuh 2 hari penyiraman
+                progresBuah += 1;
             }
             if (progresBuah >= TARGET_PROGRES_BUAH) {
                 progresBuah = TARGET_PROGRES_BUAH;
@@ -54,7 +48,7 @@ public class SawitDewasa extends TanamanSawit {
         if (!siapPanen) {
             return 0;
         }
-        // Setelah panen, pohon tetap ada dan mulai siklus berbuah berikutnya
+        // Reset status buah agar pohon tetap hidup dan bisa berbuah lagi
         siapPanen = false;
         progresBuah = 0;
         return HASIL_PANEN_KOIN;

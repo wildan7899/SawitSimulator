@@ -1,25 +1,23 @@
 /**
- * Class GameSawit mengatur seluruh logika permainan Sawit Farm:
- * grid lahan 4x4, koin, hari permainan, tanam, siram, pupuk, hari berikutnya, dan panen.
- *
- * Konsep OOP:
- * - POLYMORPHISM: Menyimpan seluruh tanaman dalam array bertipe TanamanSawit[][].
- *   Pemanggilan tumbuh(), getStatus(), getSimbol(), siram(), beriPupuk(), dan panen()
- *   otomatis mengikuti tipe subclass yang sedang menempati petak tersebut.
+ * Mengatur seluruh logika game: lahan 4x4, koin, hari, dan aksi pemain.
+ * Array TanamanSawit[][] menerapkan polymorphism karena bisa menyimpan
+ * BibitSawit, SawitMuda, maupun SawitDewasa sekaligus.
  */
 public class GameSawit {
 
+    // Aturan dasar & harga dalam game
     public static final int UKURAN_GRID = 4;
     public static final int KOIN_AWAL = 100;
     public static final int HARGA_BIBIT = 20;
     public static final int HARGA_PUPUK = 5;
     public static final int HASIL_PANEN = SawitDewasa.HASIL_PANEN_KOIN;
 
-    private final TanamanSawit[][] lahan;
+    private final TanamanSawit[][] lahan; // Grid 4x4 penyimpan objek tanaman (null = kosong)
     private int koin;
     private int hari;
     private int totalPanen;
 
+    // Inisialisasi kondisi awal game
     public GameSawit() {
         this.lahan = new TanamanSawit[UKURAN_GRID][UKURAN_GRID];
         this.koin = KOIN_AWAL;
@@ -27,9 +25,7 @@ public class GameSawit {
         this.totalPanen = 0;
     }
 
-    /**
-     * Menanam bibit sawit pada petak kosong (biaya 20 koin).
-     */
+    // Menanam bibit baru di petak kosong (biaya 20 koin)
     public String tanam(int baris, int kolom) {
         if (!posisiValid(baris, kolom)) {
             return "Pilih petak lahan terlebih dahulu.";
@@ -42,14 +38,11 @@ public class GameSawit {
         }
 
         koin -= HARGA_BIBIT;
-        // Polymorphism: objek BibitSawit disimpan dalam referensi TanamanSawit
-        lahan[baris][kolom] = new BibitSawit();
+        lahan[baris][kolom] = new BibitSawit(); // Polymorphism: simpan BibitSawit di array TanamanSawit
         return "Berhasil menanam Bibit Sawit di petak (" + (baris + 1) + "," + (kolom + 1) + ") [-" + HARGA_BIBIT + " koin].";
     }
 
-    /**
-     * Menyiram tanaman pada petak terpilih (gratis / 0 koin) via interface BisaDirawat.
-     */
+    // Menyiram tanaman di petak terpilih (gratis)
     public String siram(int baris, int kolom) {
         TanamanSawit tanaman = getTanaman(baris, kolom);
         if (tanaman == null) {
@@ -59,15 +52,13 @@ public class GameSawit {
             return "Tanaman di petak (" + (baris + 1) + "," + (kolom + 1) + ") sudah cukup air (" + tanaman.getAir() + "/" + TanamanSawit.MAKS_AIR + ").";
         }
 
-        // Memanggil method melalui referensi interface BisaDirawat
+        // Panggil method perawatan lewat interface BisaDirawat
         BisaDirawat dirawat = tanaman;
         dirawat.siram();
         return "Menyiram " + tanaman.getSimbol() + " di petak (" + (baris + 1) + "," + (kolom + 1) + ") [Air: " + tanaman.getAir() + "/" + TanamanSawit.MAKS_AIR + "].";
     }
 
-    /**
-     * Memberi pupuk pada tanaman di petak terpilih (biaya 5 koin) via interface BisaDirawat.
-     */
+    // Memberi pupuk di petak terpilih (biaya 5 koin)
     public String beriPupuk(int baris, int kolom) {
         TanamanSawit tanaman = getTanaman(baris, kolom);
         if (tanaman == null) {
@@ -87,10 +78,7 @@ public class GameSawit {
                 + ") [-" + HARGA_PUPUK + " koin | Pupuk: " + tanaman.getPupuk() + "/" + TanamanSawit.MAKS_PUPUK + "].";
     }
 
-    /**
-     * Memajukan permainan 1 hari: memanggil tumbuh() dan cekEvolusi() secara polimorfik
-     * pada seluruh tanaman yang ada di grid lahan.
-     */
+    // Ganti hari: proses pertumbuhan dan cek kenaikan tahap untuk semua tanaman di lahan
     public String hariBerikutnya() {
         hari++;
         int jumlahTumbuh = 0;
@@ -101,18 +89,18 @@ public class GameSawit {
             for (int k = 0; k < UKURAN_GRID; k++) {
                 TanamanSawit tanaman = lahan[b][k];
                 if (tanaman == null) {
-                    continue;
+                    continue; // Lewati petak kosong
                 }
                 int umurSebelum = tanaman.getUmur();
                 boolean panenSebelum = tanaman.isSiapPanen();
 
-                // POLYMORPHISM: tumbuh() berjalan sesuai subclass (Bibit / Muda / Dewasa)
+                // Polymorphism: tumbuh() otomatis mengikuti jenis subclass-nya
                 tanaman.tumbuh();
                 if (tanaman.getUmur() > umurSebelum || (!panenSebelum && tanaman.isSiapPanen())) {
                     jumlahTumbuh++;
                 }
 
-                // Evolusi fase ke subclass berikutnya sambil menjaga data umur, air, pupuk
+                // Ganti objek di grid jika tanaman naik ke tahap berikutnya
                 TanamanSawit hasilEvolusi = tanaman.cekEvolusi();
                 if (hasilEvolusi != tanaman) {
                     lahan[b][k] = hasilEvolusi;
@@ -130,9 +118,7 @@ public class GameSawit {
                 + jumlahSiapPanen + " siap panen.";
     }
 
-    /**
-     * Memanen buah sawit dewasa yang sudah siap panen (+50 koin).
-     */
+    // Memanen sawit dewasa yang sudah siap panen (+50 koin)
     public String panen(int baris, int kolom) {
         TanamanSawit tanaman = getTanaman(baris, kolom);
         if (tanaman == null) {
@@ -149,6 +135,7 @@ public class GameSawit {
                 + " koin. Rawat lagi agar berbuah kembali.";
     }
 
+    // Ambil tanaman di koordinat tertentu, kembalikan null jika di luar grid
     public TanamanSawit getTanaman(int baris, int kolom) {
         if (!posisiValid(baris, kolom)) {
             return null;
@@ -156,6 +143,7 @@ public class GameSawit {
         return lahan[baris][kolom];
     }
 
+    // Pastikan indeks baris dan kolom tidak keluar dari batas 0..3
     public boolean posisiValid(int baris, int kolom) {
         return baris >= 0 && baris < UKURAN_GRID && kolom >= 0 && kolom < UKURAN_GRID;
     }
@@ -172,13 +160,12 @@ public class GameSawit {
         return totalPanen;
     }
 
-    /**
-     * Jumlah bibit yang dapat dibeli pemain berdasarkan koin saat ini.
-     */
+    // Hitung berapa bibit yang masih bisa dibeli dengan koin saat ini
     public int getBibitTersedia() {
         return koin / HARGA_BIBIT;
     }
 
+    // Hitung total petak yang sedang terisi tanaman
     public int getJumlahTanamanAktif() {
         int total = 0;
         for (int b = 0; b < UKURAN_GRID; b++) {
