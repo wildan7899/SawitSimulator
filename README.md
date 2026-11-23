@@ -1,6 +1,8 @@
-# Sawit Farm — Mini Farming Game (OOP Java Swing)
+# Sawit Farm — Mini Farming Game (OOP Java Swing & JTable)
 
-**Sawit Farm** adalah game simulasi 2D sederhana bertema menanam kelapa sawit yang dibuat menggunakan **Java Swing** untuk mempelajari dan mempraktikkan konsep **Object-Oriented Programming (OOP)** dengan cara yang interaktif dan mudah dipahami.
+**Sawit Farm** adalah game simulasi sederhana bertema menanam kelapa sawit yang dibuat menggunakan **Java Swing (`javax.swing.*`)** dan **JTable (`javax.swing.table.*`)** untuk mempelajari dan mempraktikkan konsep **Object-Oriented Programming (OOP)** dengan cara yang interaktif dan mudah dipahami.
+
+Seluruh proyek hanya menggunakan **2 package standar Java** (`javax.swing.*` dan `javax.swing.table.*`) tanpa library eksternal maupun import `java.awt.*`.
 
 ---
 
@@ -15,21 +17,21 @@
 
 ## 2. Deskripsi Singkat Game
 
-Pemain berperan sebagai petani kelapa sawit yang memiliki lahan **4×4** (16 petak). Di setiap petak, pemain bisa menanam bibit sawit, menyiram, memberi pupuk, mempercepat waktu ke hari berikutnya, lalu memanen tandan buah sawit saat pohon sudah dewasa untuk mengumpulkan koin dan memperluas kebun.
+Pemain berperan sebagai petani kelapa sawit yang memiliki lahan **4×4** (16 petak) yang ditampilkan dalam bentuk **tabel interaktif (`JTable`)**. Di setiap sel petak, pemain bisa menanam bibit sawit, menyiram, memberi pupuk, mempercepat waktu ke hari berikutnya, lalu memanen tandan buah sawit saat pohon sudah dewasa untuk mengumpulkan koin dan memperluas kebun.
 
 ---
 
 ## 3. Cara Bermain
 
 1. **Modal Awal**: Pemain mulai dengan **100 koin** di **Hari ke-1**.
-2. **Klik Petak Lahan**: Klik salah satu petak di grid 4×4 (petak yang dipilih ditandai bingkai kuning).
-3. **Tanam (20 Koin)**: Menanam `BibitSawit` baru pada petak tanah kosong.
-4. **Siram (Gratis)**: Menambah kadar air tanaman (ditandai titik biru di pojok kiri atas petak). Tanaman **harus memiliki air** agar bisa tumbuh saat berganti hari.
-5. **Pupuk (5 Koin)**: Menambah pupuk (titik kuning di pojok kanan atas petak) agar tanaman **tumbuh dan berbuah 2× lebih cepat**.
+2. **Pilih Petak Lahan**: Klik salah satu sel di tabel lahan 4×4 (`JTable`) untuk memilih petak target.
+3. **Tanam (20 Koin)**: Menanam `BibitSawit` baru pada petak tanah kosong (`[ KOSONG ]`).
+4. **Siram (Gratis)**: Menambah kadar air tanaman (ditampilkan langsung pada sel tabel `Air: x/3` dan panel status). Tanaman **harus memiliki air** agar bisa tumbuh saat berganti hari.
+5. **Pupuk (5 Koin)**: Menambah pupuk (ditampilkan pada sel tabel `Pupuk: x/3`) agar tanaman **tumbuh dan berbuah 2× lebih cepat**.
 6. **Hari Berikutnya**: Memajukan permainan 1 hari sehingga semua tanaman di lahan berkembang:
    - **Hari 0–1**: Bibit Sawit (`BibitSawit`)
    - **Hari 2–3**: Sawit Muda (`SawitMuda`)
-   - **Hari 4+**: Sawit Dewasa (`SawitDewasa`), lalu menghasilkan buah hingga status **SIAP PANEN** (buah oranye-merah muncul di pohon).
+   - **Hari 4+**: Sawit Dewasa (`SawitDewasa`), lalu menghasilkan buah hingga status **SIAP PANEN!**.
 7. **Panen (+50 Koin)**: Memanen sawit dewasa yang siap panen untuk mendapatkan **+50 koin**. Pohon tetap ada di lahan dan bisa berbuah lagi setelah dirawat kembali!
 
 *(Catatan: Angka hari, biaya, dan koin dibuat sederhana khusus untuk mekanisme game.)*
@@ -50,14 +52,14 @@ Struktur file proyek:
 ```text
 SawitSimulator/
 ├── src/
-│   ├── Main.java            # Menjalankan game di Swing Event Dispatch Thread
+│   ├── Main.java            # Menjalankan game di Swing Event Dispatch Thread (javax.swing.*)
 │   ├── BisaDirawat.java     # Interface perawatan (siram & beriPupuk)
 │   ├── TanamanSawit.java    # Abstract class induk seluruh tanaman sawit
 │   ├── BibitSawit.java      # Subclass tahap bibit (Hari 0-1)
 │   ├── SawitMuda.java       # Subclass tahap sawit muda (Hari 2-3)
 │   ├── SawitDewasa.java     # Subclass tahap sawit dewasa & panen (Hari 4+)
 │   ├── GameSawit.java       # Logika grid 4x4, koin, hari, dan aksi game
-│   └── GameGUI.java         # Tampilan 2D Java Swing (grid, ilustrasi, tombol)
+│   └── GameGUI.java         # Tampilan GUI Java Swing & JTable (javax.swing.* & javax.swing.table.*)
 ├── docs/
 │   ├── class-diagram.png    # Gambar Class Diagram UML
 │   ├── class-diagram.puml   # Sumber PlantUML
@@ -131,7 +133,7 @@ if (hasilEvolusi != tanaman) {
 }
 ```
 
-Di `GameGUI.java`, teks status dan visual 2D petak juga langsung memanggil `tanaman.getStatus()` dan `tanaman.getSimbol()` melalui referensi `TanamanSawit`.
+Di `GameGUI.java`, teks status dan isi setiap sel `JTable` juga langsung memanggil `tanaman.getStatus()` dan `tanaman.getSimbol()` melalui referensi `TanamanSawit`.
 
 ---
 

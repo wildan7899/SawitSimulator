@@ -66,7 +66,8 @@ class GameSawit {
 
 class GameGUI {
   - game: GameSawit
-  - petakGrid: PetakPanel[][]
+  - modelLahan: DefaultTableModel
+  - tabelLahan: JTable
   - barisTerpilih: int
   - kolomTerpilih: int
   + pilihPetak(baris: int, kolom: int): void
